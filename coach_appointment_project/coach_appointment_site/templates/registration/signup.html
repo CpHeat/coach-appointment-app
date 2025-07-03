@@ -1,0 +1,11 @@
+{% extends "../coach_appointment_site/base.html" %}
+
+{% block title %}Coach Appointment App - Accueil{% endblock %}
+
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        {{form}}
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% load static %}
+{% load static tailwind_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="{% static 'coach_appointment_site/style.css' %}">
+    {% tailwind_css %}
+    <meta charset="UTF-8">
+    <title>{% block title %}Coach Appointment App{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+  </head>
+  <body class="flex flex-col min-h-screen">
+    {% include "./partials/header.html" %}
+
+    <div class="container flex-grow p-4">
+      <div class="content">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+
+    {% include "./partials/footer.html" %}
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+  </body>
+</html>
