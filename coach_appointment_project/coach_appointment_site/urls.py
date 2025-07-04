@@ -10,4 +10,6 @@ urlpatterns = [
     path("logout/", views.logout_view, name="logout"),
     path("", views.index_view, name="index"),
     path("dashboard/", views.dashboard_view, name="dashboard"),
+    path("create_user/", views.create_user_view, name="create_user"),
+    path("create_appointment/", views.create_appointment_view, name="create_appointment"),
 ] + debug_toolbar_urls()
