@@ -4,8 +4,42 @@
 
 {% block content %}
     <form method="POST">
+
         {% csrf_token %}
-        {{form}}
-        <button type="submit">Submit</button>
+
+        <p>
+            {{ form.username.label_tag }}<br>
+            {{ form.username }}
+            {% for error in form.username.errors %}
+              <span style="color:red">{{ error }}</span>
+            {% endfor %}
+          </p>
+
+          <p>
+            {{ form.password1.label_tag }}<br>
+            {{ form.password1 }}
+            {% for error in form.password1.errors %}
+              <span style="color:red">{{ error }}</span>
+            {% endfor %}
+          </p>
+
+          <p>
+            {{ form.password2.label_tag }}<br>
+            {{ form.password2 }}
+            {% for error in form.password2.errors %}
+              <span style="color:red">{{ error }}</span>
+            {% endfor %}
+          </p>
+
+          {% if form.non_field_errors %}
+            <ul class="errorlist">
+              {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+        <button type="submit">Signup</button>
     </form>
+
 {% endblock %}
