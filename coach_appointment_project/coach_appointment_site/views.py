@@ -1,16 +1,10 @@
 from django.contrib.auth import logout, login, authenticate
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 
-@login_required(login_url="/login/")
-def index_view(request):
-    return render(request, "coach_appointment_site/index.html", {})
+from .forms import CustomUserCreationForm, AppointmentCreationForm
 
-@login_required(login_url="/login/")
-def dashboard_view(request):
-    return render(request, "coach_appointment_site/dashboard.html", {})
 
 def signup_view(request):
     if request.method == "POST":
@@ -46,3 +40,31 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("coach_appointment_site:index")
+
+def index_view(request):
+    return render(request, "coach_appointment_site/index.html", {})
+
+def dashboard_view(request):
+    return render(request, "coach_appointment_site/dashboard.html", {})
+
+def create_appointment_view(request):
+    if request.method == "POST":
+        form = AppointmentCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("coach_appointment_site:dashboard")
+    else:
+        form = AppointmentCreationForm()
+    return render(request, "coach_appointment_site/forms/create_appointment.html", {"form": form})
+
+def create_user_view(request):
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            group = form.cleaned_data["group"]
+            user.groups.add(group)
+            return redirect("coach_appointment_site:dashboard")
+    else:
+        form = CustomUserCreationForm()
+    return render(request, "coach_appointment_site/forms/create_user.html", {"form": form})

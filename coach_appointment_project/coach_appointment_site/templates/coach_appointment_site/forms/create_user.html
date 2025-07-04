@@ -1,0 +1,20 @@
+{% extends "../base.html" %}
+
+{% load user_extras %}
+
+{% block title %}Coach Appointment App - Create user{% endblock %}
+
+{% block content %}
+
+    {% if user.is_authenticated and user|has_group:"admin" %}
+        <p>Bonjour {{ user.username }} !</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Créer l'utilisateur</button>
+        </form>
+    {% else %}
+      <p>SEULS LES ADMINS ONT ACCES A CETTE PAGE.</p>
+    {% endif %}
+
+{% endblock %}

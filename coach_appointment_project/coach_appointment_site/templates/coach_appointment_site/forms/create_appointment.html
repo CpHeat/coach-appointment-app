@@ -1,0 +1,20 @@
+{% extends "../base.html" %}
+
+{% load user_extras %}
+
+{% block title %}Coach Appointment App - Create appointment{% endblock %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+        <p>Bonjour {{ user.username }} !</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Create appointment</button>
+        </form>
+    {% else %}
+      <p>Cette page nécessite d'être connecté</p>
+    {% endif %}
+
+{% endblock %}
