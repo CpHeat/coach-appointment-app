@@ -20,7 +20,12 @@ class CustomUserCreationForm(UserCreationForm):
 
 class AppointmentCreationForm(ModelForm):
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time', 'step': '60'}))
+    time = forms.TimeField(
+        widget=forms.TimeInput(
+            format='%H:%M',
+            attrs={'type': 'time', 'step': '60'}),
+            input_formats = ['%H:%M']
+        )
 
     class Meta:
         model = Appointment

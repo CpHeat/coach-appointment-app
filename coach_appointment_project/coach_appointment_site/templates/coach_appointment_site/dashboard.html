@@ -11,18 +11,55 @@
 {% block content %}
 
     {% if user.is_authenticated %}
-        <p>Bonjour {{ user.username }} !</p>
+        <h1>Liste des rendez-vous</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Coach</th>
+                    <th>Client</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment.id }}</td>
+                    <td>{{ appointment.date }}</td>
+                    <td>{{ appointment.coach.username }}</td>
+                    <td>{{ appointment.client.username }}</td>
+                    <td>
+                        <a href="{% url 'coach_appointment_site:update_appointment' appointment.id %}">Modifier</a>
+                        <form action="{% url 'coach_appointment_site:delete_appointment' appointment.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">Aucun rendez-vous.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'coach_appointment_site:create_appointment' %}">Ajouter un rdv</a>
+
+
+
+
+
         {% if user|has_group:"admin" %}
-            <p>Vous êtes un admin.</p>
-        {% elif user|has_group:"coach" %}
-            <p>Vous êtes un coach.</p>
-        {% elif user|has_group:"client" %}
-            <p>Vous êtes un client.</p>
+
+        <h1>Liste des utilisateurs</h1>
+
+
+
+
         {% endif %}
     {% else %}
       <p>Vous n'êtes pas connecté.</p>
     {% endif %}
-
-    <h1 class="bg-testpink">Page d'accueil</h1>
-    <p>Voici le dashboard.</p>
 {% endblock %}
