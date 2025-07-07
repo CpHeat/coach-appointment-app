@@ -13,6 +13,8 @@ import os
 import sys
 from pathlib import Path
 
+from django.conf.locale.bn.formats import TIME_INPUT_FORMATS
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -129,6 +131,10 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Europe/Paris'
+
+TIME_INPUT_FORMATS = [
+    '%H:%M',
+]
 
 USE_I18N = True
 

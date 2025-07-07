@@ -1,0 +1,10 @@
+{% extends "../coach_appointment_site/base.html" %}
+
+{% block content %}
+{% if not user.is_authenticated %}
+    <p>Vous devez être connecté pour accéder à cette page.</p>
+{% else %}
+    <p>Vous n'avez pas les droits nécessaires pour accéder à cette page.</p>
+    <p>Cette page est réservée aux {{ required_role }}.</p>
+{% endif %}
+{% endblock %}
