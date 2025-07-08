@@ -11,15 +11,17 @@ class CustomUserCreationForm(UserCreationForm):
         queryset=Group.objects.filter(name__in=["admin", "client", "coach"]),
         required=True,
         widget=forms.Select,
-        initial=Group.objects.get(name="coach").id
+        initial=Group.objects.get(name="client").id
     )
 
     class Meta:
         model = User
-        fields = ("username", "password1", "password2", "group")
+        fields = ("username", "password1", "password2", "first_name", "last_name", "email", "group")
 
 class AppointmentCreationForm(ModelForm):
-    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    date = forms.DateField(
+        input_formats=['%m/%d/%Y'],
+        widget=forms.DateInput(attrs={'type': 'date'}))
     time = forms.TimeField(
         widget=forms.TimeInput(
             format='%H:%M',
@@ -29,4 +31,21 @@ class AppointmentCreationForm(ModelForm):
 
     class Meta:
         model = Appointment
-        fields = ("date", "time", "coach", "client", "appointment_subject")
+        fields = ("coach", "client", "date", "time", "subject")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        coach_group = Group.objects.get(name='coach')
+        self.fields['coach'].queryset = User.objects.filter(groups=coach_group)
+
+        client_group = Group.objects.get(name='client')
+        self.fields['client'].queryset = User.objects.filter(groups=client_group)
+
+        # Potential hours
+        _hours = [
+            (f"{h:02d}:{m:02d}", f"{h:02d}:{m:02d}")
+            for h in range(8, 19)
+            for m in (0, 30)
+        ]
+        self.fields['time'].choices = _hours

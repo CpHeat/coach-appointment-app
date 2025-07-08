@@ -6,6 +6,7 @@
     <form method="POST">
 
         {% csrf_token %}
+        <input type="hidden" name="group" value="{{ client_group.id }}">
 
         <p>
             {{ form.username.label_tag }}<br>
@@ -27,6 +28,30 @@
             {{ form.password2.label_tag }}<br>
             {{ form.password2 }}
             {% for error in form.password2.errors %}
+              <span style="color:red">{{ error }}</span>
+            {% endfor %}
+          </p>
+
+            <p>
+            {{ form.email.label_tag }}<br>
+            {{ form.email }}
+            {% for error in form.email.errors %}
+              <span style="color:red">{{ error }}</span>
+            {% endfor %}
+          </p>
+
+        <p>
+            {{ form.first_name.label_tag }}<br>
+            {{ form.first_name }}
+            {% for error in form.first_name.errors %}
+              <span style="color:red">{{ error }}</span>
+            {% endfor %}
+          </p>
+
+        <p>
+            {{ form.last_name.label_tag }}<br>
+            {{ form.last_name }}
+            {% for error in form.last_name.errors %}
               <span style="color:red">{{ error }}</span>
             {% endfor %}
           </p>

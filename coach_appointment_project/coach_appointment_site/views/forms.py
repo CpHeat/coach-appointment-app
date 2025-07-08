@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import redirect, render, get_object_or_404
 
 from ..decorators import group_required
@@ -8,11 +10,15 @@ from ..models import Appointment
 def create_appointment_view(request):
     if request.method == "POST":
         form = AppointmentCreationForm(request.POST)
+
         if form.is_valid():
             form.save()
             return redirect("coach_appointment_site:dashboard")
+        else:
+            print(form.errors)
     else:
-        form = AppointmentCreationForm()
+        form = AppointmentCreationForm(initial={'date': datetime.date.today()})
+
     return render(request, "coach_appointment_site/forms/create_appointment.html", {"form": form})
 
 @group_required(["admin"])
@@ -20,7 +26,9 @@ def create_user_view(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
             group = form.cleaned_data["group"]
             user.groups.add(group)
             return redirect("coach_appointment_site:dashboard")
