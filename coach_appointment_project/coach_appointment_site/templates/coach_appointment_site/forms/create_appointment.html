@@ -15,9 +15,9 @@
 
                 {% for field in form %}
                     {% if field.name == 'coach' %}
-                        {% if user|has_group:"client" or user|has_group:"admin" %}
-                            {% if user|has_group:"client" %}
-                                <input type="hidden" name="client" value="{{ request.user.id }}">
+                        {% if user|has_group:"customer" or user|has_group:"admin" %}
+                            {% if user|has_group:"customer" %}
+                                <input type="hidden" name="customer" value="{{ request.user.id }}">
                             {% endif %}
                             <div class="mb-5">
                                 <label for="coach" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -40,23 +40,23 @@
                         {% endif %}
                     {% endif %}
 
-                    {% if field.name == 'client' %}
+                    {% if field.name == 'customer' %}
                         {% if user|has_group:"coach" or user|has_group:"admin" %}
                             {% if user|has_group:"coach" %}
-                                <input type="hidden" name="client" value="{{ request.user.id }}">
+                                <input type="hidden" name="coach" value="{{ request.user.id }}">
                             {% endif %}
                             <div class="mb-5">
-                                <label for="client" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select your client</label>
-                                <select id="client" name="client" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    {% for choice in form.client.field.queryset %}
+                                <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select your customer</label>
+                                <select id="customer" name="customer" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    {% for choice in form.customer.field.queryset %}
                                         <option value="{{ choice.pk }}">{{ choice }}</option>
                                     {% endfor %}
                                 </select>
 
 
-                                {% if form.client.errors %}
+                                {% if form.customer.errors %}
                                     <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-                                        {{ form.client.errors.as_text|striptags }}
+                                        {{ form.customer.errors.as_text|striptags }}
                                     </p>
                                 {% endif %}
                             </div>

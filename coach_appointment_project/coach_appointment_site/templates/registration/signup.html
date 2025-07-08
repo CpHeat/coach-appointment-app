@@ -6,7 +6,7 @@
     <form method="POST">
 
         {% csrf_token %}
-        <input type="hidden" name="group" value="{{ client_group.id }}">
+        <input type="hidden" name="group" value="{{ customer_group.id }}">
 
         <p>
             {{ form.username.label_tag }}<br>

@@ -1,18 +1,16 @@
 import datetime
 
-from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from django.db import models
 from django.db.models import CheckConstraint, Q
 
-
 class Appointment(models.Model):
 
     date = models.DateField('Appointment date')
     time = models.TimeField('Appointment time')
-    coach = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointment_coach')
-    client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointment_client')
+    coach = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments_coach')
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments_customer')
     subject = models.CharField(max_length=500)
     note = models.TextField(null=True, blank=True)
     attended = models.BooleanField(default=False)
@@ -55,7 +53,7 @@ class Appointment(models.Model):
             )
 
         clash = Appointment.objects.filter(
-            client=self.client,
+            customer=self.customer,
             date=self.date,
             time=self.time
         )
@@ -65,7 +63,7 @@ class Appointment(models.Model):
 
         if clash.exists():
             errors.setdefault(NON_FIELD_ERRORS, []).append(
-                f"{self.client} already has an appointment at this date."
+                f"{self.customer} already has an appointment at this date."
             )
 
         if errors:

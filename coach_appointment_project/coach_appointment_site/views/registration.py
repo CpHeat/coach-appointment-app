@@ -21,15 +21,15 @@ def access_denied_view(request, required_role=None):
         {"required_role": required_role})
 
 def signup_view(request):
-    client_group, created = Group.objects.get_or_create(name='client')
+    customer_group, created = Group.objects.get_or_create(name='customer')
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            # Saves the user as inactive and attach it to client group
+            # Saves the user as inactive and attach it to customer group
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            user.groups.add(client_group)
+            user.groups.add(customer_group)
 
             # Sends the confirmation mail
             current_site = get_current_site(request)
@@ -44,11 +44,14 @@ def signup_view(request):
             email = EmailMessage(mail_subject, message, to=[to_email])
             email.send()
 
-            return redirect("coach_appointment_site:login")
+            return redirect("coach_appointment_site:signup_success")
     else:
         form = CustomUserCreationForm()
 
-    return render(request, "registration/signup.html", {"form": form, "client_group": client_group})
+    return render(request, "registration/signup.html", {"form": form, "customer_group": customer_group})
+
+def signup_success_view(request):
+    return render(request,'registration/signup_success.html')
 
 def activate_account(request, uidb64, token):
     User = get_user_model()
@@ -67,15 +70,26 @@ def activate_account(request, uidb64, token):
 
 def login_view(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            print("connection active")
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
             login(request, user)
             return redirect("coach_appointment_site:index")
+        else:
+            print("erreurs:", form.errors)
+    else:
+        form = AuthenticationForm()
 
-    return render(request, "registration/login.html", {"form": AuthenticationForm()})
+
+        # username = request.POST["username"]
+        # password = request.POST["password"]
+        # user = authenticate(request, username=username, password=password)
+        # if user is not None:
+        #     print("connection active")
+        #     login(request, user)
+        #     return redirect("coach_appointment_site:index")
+
+    return render(request, "registration/login.html", {"form": form})
 
 @group_required()
 def logout_view(request):

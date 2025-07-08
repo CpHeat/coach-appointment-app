@@ -5,7 +5,25 @@
 {% block content %}
     <form method="POST">
         {% csrf_token %}
-        {{form}}
+        {{ form.username.label_tag }}<br>
+        {{ form.username }}
+        {% for error in form.username.errors %}
+          <span style="color:red">{{ error }}</span>
+        {% endfor %}
+        {{ form.password.label_tag }}<br>
+        {{ form.password }}
+        {% for error in form.password.errors %}
+          <span style="color:red">{{ error }}</span>
+        {% endfor %}
+
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+              {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        
         <button type="submit">Submit</button>
     </form>
 {% endblock %}

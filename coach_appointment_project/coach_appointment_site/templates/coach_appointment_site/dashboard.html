@@ -4,62 +4,318 @@
 
 {% block title %}Coach Appointment App - Accueil{% endblock %}
 
-
-
-
-
 {% block content %}
 
-    {% if user.is_authenticated %}
-        <h1>Liste des rendez-vous</h1>
+{% if user.is_authenticated %}
 
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Coach</th>
-                    <th>Client</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for appointment in appointments %}
-                <tr>
-                    <td>{{ appointment.id }}</td>
-                    <td>{{ appointment.date }}</td>
-                    <td>{{ appointment.coach.username }}</td>
-                    <td>{{ appointment.client.username }}</td>
-                    <td>
-                        <a href="{% url 'coach_appointment_site:update_appointment' appointment.id %}">Modifier</a>
-                        <form action="{% url 'coach_appointment_site:delete_appointment' appointment.id %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')">Supprimer</button>
-                        </form>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5">Aucun rendez-vous.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <a href="{% url 'coach_appointment_site:create_appointment' %}">Ajouter un rdv</a>
+    {% if user|has_group:"coach" %}
+        <div class="w-3/4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
+                <li class="me-2">
+                    <button id="appointments-tab" data-tabs-target="#appointments" type="button" role="tab" aria-controls="appointments" aria-selected="true" class="inline-block p-4 text-blue-600 rounded-ss-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-blue-500">Appointments</button>
+                </li>
+                <li class="me-2">
+                    <button id="customers-tab" data-tabs-target="#customers" type="button" role="tab" aria-controls="customers" aria-selected="false" class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300">Customers</button>
+                </li>
+                <li class="me-2">
+                    <button id="statistics-tab" data-tabs-target="#statistics" type="button" role="tab" aria-controls="statistics" aria-selected="false" class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300">Statistics</button>
+                </li>
+            </ul>
+            <div id="defaultTabContent">
+                <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
+                    <h2 class="mb-3 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Upcoming appointments</h2>
+
+                    {% if appointments %}
+                        <ul class="w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        {% for appointment in appointments %}
+                            <li class="pb-3 sm:pb-4">
+                                <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                     <div class="shrink-0">
+                                        <img class="w-8 h-8 rounded-full" src="https://i.pravatar.cc/300" alt="Neil image">
+                                     </div>
+                                     <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                            {{ appointment.customer.first_name }} {{ appointment.customer.last_name }}
+                                        </p>
+                                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                            {{ appointment.customer.email }}
+                                        </p>
+                                     </div>
+                                     <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                        {{ appointment.date }} - {{ appointment.time|time:"H:i" }}
+                                     </div>
+                                  </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="mb-3 text-gray-500 dark:text-gray-400">No appointments scheduled.</p>
+                    {% endif %}
+
+                    <a href="#" class="inline-flex items-center font-medium text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-700">
+                        Schedule an appointment
+                        <svg class=" w-2.5 h-2.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                    </a>
+                </div>
 
 
 
 
 
-        {% if user|has_group:"admin" %}
 
-        <h1>Liste des utilisateurs</h1>
+                <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="customers" role="tabpanel" aria-labelledby="customers-tab">
+                    <h2 class="mb-5 text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">Your adored customers</h2>
+
+                    {% if appointments %}
+                        <div id="accordion-open" data-accordion="open">
+                        {% for customer in customers %}
+
+
+                            <h2 id="accordion-open-heading-{{ customer.id }}">
+                                {% if forloop.first %}
+                                    <button type="button" class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-gray-200 rounded-t-xl dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-open-body-{{ customer.id }}" aria-expanded="false" aria-controls="accordion-open-body-{{ customer.id }}">
+                              {% else %}
+                                      <button type="button" class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-gray-200 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-open-body-{{ customer.id }}" aria-expanded="false" aria-controls="accordion-open-body-{{ customer.id }}">
+                              {% endif %}
+                                       <span>{{ customer.first_name }} {{ customer.last_name }}</span>
+                              <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+                              </svg>
+                            </button>
+                          </h2>
+                          <div id="accordion-open-body-{{ customer.id }}" class="hidden" aria-labelledby="accordion-open-heading-{{ customer.id }}">
+                              {% if forloop.last %}
+                            <div class="p-5 border border-t-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+                                {% else %}
+                            <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+                                {% endif %}
+
+                                <ul class="w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    {% for appointment in customer.appointments_customer.all %}
+                                        <li class="pb-3 sm:pb-4">
+                                            <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                                 <div class="flex-1 min-w-0">
+                                                    <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                                        {{ appointment.subject }}
+                                                    </p>
+                                                 </div>
+                                                 <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                                    {{ appointment.date }} - {{ appointment.time|time:"H:i" }}
+                                                 </div>
+                                              </div>
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+
+
+                            </div>
+                          </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="mb-3 text-gray-500 dark:text-gray-400">You have no customers. You should be prospecting!</p>
+                    {% endif %}
+                </div>
 
 
 
 
-        {% endif %}
-    {% else %}
-      <p>Vous n'êtes pas connecté.</p>
+
+                <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="statistics" role="tabpanel" aria-labelledby="statistics-tab">
+                    <dl class="grid max-w-screen-xl grid-cols-2 gap-8 p-4 mx-auto text-gray-900 sm:grid-cols-3 xl:grid-cols-6 dark:text-white sm:p-8">
+                        <div class="flex flex-col">
+                            <dt class="mb-2 text-3xl font-extrabold">{{ customers|length }}</dt>
+                            <dd class="text-gray-500 dark:text-gray-400">Customers</dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="mb-2 text-3xl font-extrabold">{{ appointments|length }}</dt>
+                            <dd class="text-gray-500 dark:text-gray-400">Appointments</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+
+            {% elif user|has_group:"customer" %}
+        <div class="w-3/4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
+                <li class="me-2">
+                    <button id="appointments-tab" data-tabs-target="#appointments" type="button" role="tab" aria-controls="appointments" aria-selected="true" class="inline-block p-4 text-blue-600 rounded-ss-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-blue-500">Appointments</button>
+                </li>
+                <li class="me-2">
+                    <button id="coaches-tab" data-tabs-target="#coaches" type="button" role="tab" aria-controls="coaches" aria-selected="false" class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300">Coaches</button>
+                </li>
+            </ul>
+            <div id="defaultTabContent">
+                <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
+                    <h2 class="mb-3 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Upcoming appointments</h2>
+
+                    {% if appointments %}
+                        <ul class="w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        {% for appointment in appointments %}
+                            <li class="pb-3 sm:pb-4">
+                                <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                     <div class="shrink-0">
+                                        <img class="w-8 h-8 rounded-full" src="https://i.pravatar.cc/300" alt="Neil image">
+                                     </div>
+                                     <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                            {{ appointment.coaches.first_name }} {{ appointment.coaches.last_name }}
+                                        </p>
+                                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                            {{ appointment.coaches.email }}
+                                        </p>
+                                     </div>
+                                     <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                        {{ appointment.date }} - {{ appointment.time|time:"H:i" }}
+                                     </div>
+                                  </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="mb-3 text-gray-500 dark:text-gray-400">No appointments scheduled.</p>
+                    {% endif %}
+
+                    <a href="#" class="inline-flex items-center font-medium text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-700">
+                        Schedule an appointment
+                        <svg class=" w-2.5 h-2.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                    </a>
+                </div>
+
+
+
+
+
+
+                <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="coaches" role="tabpanel" aria-labelledby="coaches-tab">
+                    <h2 class="mb-5 text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">Your loved coaches</h2>
+
+                    {% if appointments %}
+                        <div id="accordion-open" data-accordion="open">
+                        {% for coach in coaches %}
+
+
+                            <h2 id="accordion-open-heading-{{ coach.id }}">
+                                {% if forloop.first %}
+                                    <button type="button" class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-gray-200 rounded-t-xl dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-open-body-{{ coach.id }}" aria-expanded="false" aria-controls="accordion-open-body-{{ coach.id }}">
+                              {% else %}
+                                      <button type="button" class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-gray-200 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-open-body-{{ coach.id }}" aria-expanded="false" aria-controls="accordion-open-body-{{ coach.id }}">
+                              {% endif %}
+                                       <span class="flex items-center"><svg class="w-5 h-5 me-2 shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>{{ coach.first_name }} {{ coach.last_name }}</span>
+                              <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+                              </svg>
+                            </button>
+                          </h2>
+                          <div id="accordion-open-body-{{ coach.id }}" class="hidden" aria-labelledby="accordion-open-heading-{{ coach.id }}">
+                              {% if forloop.last %}
+                            <div class="p-5 border border-t-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+                                {% else %}
+                            <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+                                {% endif %}
+
+                                <ul class="w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    {% for appointment in coach.appointments_coach.all %}
+                                        <li class="pb-3 sm:pb-4">
+                                            <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                                 <div class="flex-1 min-w-0">
+                                                    <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                                        {{ appointment.subject }}
+                                                    </p>
+                                                 </div>
+                                                 <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                                    {{ appointment.date }} - {{ appointment.time|time:"H:i" }}
+                                                 </div>
+                                              </div>
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+
+
+                            </div>
+                          </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="mb-3 text-gray-500 dark:text-gray-400">You have no coach. Grab yourself one!</p>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+
     {% endif %}
+
+{% endif %}
+
+
+
+
+
+
+<!-- drawer init and show -->
+<div class="text-center">
+   <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" type="button" data-drawer-target="drawer-form" data-drawer-show="drawer-form" aria-controls="drawer-form">
+   Show drawer form
+   </button>
+</div>
+
+<!-- drawer component -->
+<div id="drawer-form" class="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-white w-80 dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-form-label">
+   <h5 id="drawer-label" class="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400"><svg class="w-3.5 h-3.5 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm14-7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm-5-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm-5-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4Z"/>
+  </svg>New event</h5>
+   <button type="button" data-drawer-hide="drawer-form" aria-controls="drawer-form" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white" >
+      <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+      </svg>
+      <span class="sr-only">Close menu</span>
+   </button>
+   <form class="mb-6">
+      <div class="mb-6">
+         <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+         <input type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Apple Keynote" required />
+      </div>
+      <div class="mb-6">
+         <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+         <textarea id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write event description..."></textarea>
+      </div>
+      <div class="relative mb-6">
+         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+               <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+            </svg>
+         </div>
+         <input datepicker="" datepicker-autohide datepicker-buttons="" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 datepicker-input" placeholder="Select date">
+      </div>
+      <div class="mb-4">
+         <label for="guests" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Invite guests</label>
+         <div class="relative">
+            <input type="search" id="guests" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Add guest email" required />
+            <button type="button" class="absolute inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-700 rounded-lg end-2 bottom-2 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"><svg class="w-3 h-3 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+    <path d="M6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Zm11-3h-2V5a1 1 0 0 0-2 0v2h-2a1 1 0 1 0 0 2h2v2a1 1 0 0 0 2 0V9h2a1 1 0 1 0 0-2Z"/>
+  </svg>Add</button>
+         </div>
+      </div>
+      <div class="flex mb-4 -space-x-4 rtl:space-x-reverse">
+         <img class="w-8 h-8 border-2 border-white rounded-full dark:border-gray-800" src="/docs/images/people/profile-picture-5.jpg" alt="">
+         <img class="w-8 h-8 border-2 border-white rounded-full dark:border-gray-800" src="/docs/images/people/profile-picture-2.jpg" alt="">
+         <img class="w-8 h-8 border-2 border-white rounded-full dark:border-gray-800" src="/docs/images/people/profile-picture-3.jpg" alt="">
+         <img class="w-8 h-8 border-2 border-white rounded-full dark:border-gray-800" src="/docs/images/people/profile-picture-4.jpg" alt="">
+      </div>
+      <button type="submit" class="text-white justify-center flex items-center bg-blue-700 hover:bg-blue-800 w-full focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"><svg class="w-3.5 h-3.5 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M18 2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2ZM2 18V7h6.7l.4-.409A4.309 4.309 0 0 1 15.753 7H18v11H2Z"/>
+    <path d="M8.139 10.411 5.289 13.3A1 1 0 0 0 5 14v2a1 1 0 0 0 1 1h2a1 1 0 0 0 .7-.288l2.886-2.851-3.447-3.45ZM14 8a2.463 2.463 0 0 0-3.484 0l-.971.983 3.468 3.468.987-.971A2.463 2.463 0 0 0 14 8Z"/>
+  </svg> Create event</button>
+   </form>
+</div>
+
+
 {% endblock %}
