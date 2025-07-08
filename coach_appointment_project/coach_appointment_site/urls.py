@@ -7,6 +7,7 @@ from . import views
 urlpatterns = [
     path('access-denied/<str:required_role>/', views.access_denied_view, name='access_denied'),
     path("signup/", views.signup_view, name="signup"),
+    path('activate/<uidb64>/<token>/', views.activate_account, name='activate_account'),
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
     path("", views.index_view, name="index"),

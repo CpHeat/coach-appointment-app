@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tailwind',
     'theme',
+    'widget_tweaks',
     'django_browser_reload',
     'coach_appointment_site.apps.CoachAppointmentSiteConfig',
 ]
@@ -128,12 +129,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-FR'
 
 TIME_ZONE = 'Europe/Paris'
 
 TIME_INPUT_FORMATS = [
-    '%H:%M',
+    '%H:%M'
 ]
 
 USE_I18N = True
@@ -151,3 +152,11 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ton_email@example.com'
+EMAIL_HOST_PASSWORD = 'mot_de_passe'
+DEFAULT_FROM_EMAIL = 'MonSite <noreply@monsite.com>'

@@ -1,18 +1,138 @@
 {% extends "../base.html" %}
 
 {% load user_extras %}
+{% load widget_tweaks %}
 
 {% block title %}Coach Appointment App - Create appointment{% endblock %}
 
 {% block content %}
 
     {% if user.is_authenticated %}
-        <p>Bonjour {{ user.username }} !</p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Create appointment</button>
-        </form>
+        <p>{{ user.username }}</p>
+        <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 w-1/2">
+            <form class="dark:bg-amber-600 max-w-sm mx-auto" method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    {% if field.name == 'coach' %}
+                        {% if user|has_group:"client" or user|has_group:"admin" %}
+                            {% if user|has_group:"client" %}
+                                <input type="hidden" name="client" value="{{ request.user.id }}">
+                            {% endif %}
+                            <div class="mb-5">
+                                <label for="coach" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Select your coach
+                                </label>
+                                <select id="coach" name="coach" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    {% for choice in form.coach.field.queryset %}
+                                        <option value="{{ choice.pk }}">
+                                            {{ choice }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                {% if form.coach.errors %}
+                                    <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                                        {{ form.coach.errors.as_text|striptags }}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if field.name == 'client' %}
+                        {% if user|has_group:"coach" or user|has_group:"admin" %}
+                            {% if user|has_group:"coach" %}
+                                <input type="hidden" name="client" value="{{ request.user.id }}">
+                            {% endif %}
+                            <div class="mb-5">
+                                <label for="client" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select your client</label>
+                                <select id="client" name="client" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    {% for choice in form.client.field.queryset %}
+                                        <option value="{{ choice.pk }}">{{ choice }}</option>
+                                    {% endfor %}
+                                </select>
+
+
+                                {% if form.client.errors %}
+                                    <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                                        {{ form.client.errors.as_text|striptags }}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if field.name == 'date' %}
+                        <div class="mb-5">
+                            <label for="{{ field.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ field.label }}</label>
+                            <input datepicker id="date" name="date" placeholder="Select a date" value="{{ field.value }}" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+
+                            {% if form.date.errors %}
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                                    {{ form.date.errors.as_text|striptags }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if field.name == 'time' %}
+                        <div class="mb-5">
+                            <label for="time" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select time</label>
+                            <select id="time" name="time" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                {% for option in field.field.choices %}
+                                    <option value="{{ option.0 }}" {% if option.0 in form.taken_times %}disabled{% endif %}
+                                    {% if option.0 == field.value %}selected{% endif %}>{{ option.1 }}</optiondisabled>
+                                {% endfor %}
+                            </select>
+
+                            {% if form.time.errors %}
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                                    {{ form.time.errors.as_text|striptags }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if field.name == 'subject' %}
+                        <div class="mb-5">
+                            <label for="subject" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subject of appointment</label>
+                            <textarea id="subject" name="subject" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your expectations here..."></textarea>
+
+                            {% if form.subject.errors %}
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                                    {{ form.subject.errors.as_text|striptags }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                {% endfor %}
+
+                {% if form.non_field_errors %}
+                    <div class="text-red-600 mb-4">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if form.errors %}
+                  <ul class="errors">
+                  {% for field, errors in form.errors.items %}
+                    <li><strong>{{ field }}</strong>:
+                      <ul>
+                        {% for error in errors %}
+                          <li>{{ error }}</li>
+                        {% endfor %}
+                      </ul>
+                    </li>
+                  {% endfor %}
+                  </ul>
+                {% endif %}
+                <button type="submit">Create appointment</button>
+            </form>
+        </div>
     {% else %}
       <p>Cette page nécessite d'être connecté</p>
     {% endif %}
