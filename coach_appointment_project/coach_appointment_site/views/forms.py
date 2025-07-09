@@ -19,7 +19,7 @@ def create_appointment_view(request):
     else:
         form = AppointmentCreationForm(initial={'date': datetime.date.today()})
 
-    return render(request, "coach_appointment_site/forms/create_appointment.html", {"form": form})
+    return render(request, "coach_appointment_site/forms/schedule_appointment.html", {"form": form})
 
 @group_required(["admin"])
 def create_user_view(request):
