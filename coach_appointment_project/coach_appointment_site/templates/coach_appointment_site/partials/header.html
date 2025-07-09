@@ -1,4 +1,5 @@
 {% load static %}
+{% load user_extras %}
 
 <header>
     <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
@@ -26,21 +27,20 @@
                         <a href="{% url 'coach_appointment_site:index' %}" class="block py-2 pr-4 pl-3 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Home</a>
                     </li>
                 </ul>
-                <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0 mx-2">
-                    <li>
-                        <a href="{% url 'coach_appointment_site:create_user' %}" class="block py-2 pr-4 pl-3 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Create User</a>
-                    </li>
-                </ul>
-                <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0 mx-2">
-                    <li>
-                        <a href="{% url 'coach_appointment_site:create_appointment' %}" class="block py-2 pr-4 pl-3 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Create Appointment</a>
-                    </li>
-                </ul>
+                {% if not user|has_group:"admin" %}
                 <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0 mx-2">
                     <li>
                         <a href="{% url 'coach_appointment_site:dashboard' %}" class="block py-2 pr-4 pl-3 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Dashboard</a>
                     </li>
                 </ul>
+                {% endif %}
+                {% if user.is_authenticated and user|has_group:"admin" %}
+                <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0 mx-2">
+                    <li>
+                        <a href="{% url 'coach_appointment_site:create_user' %}" class="block py-2 pr-4 pl-3 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Create User</a>
+                    </li>
+                </ul>
+                {% endif %}
             </div>
         </div>
     </nav>

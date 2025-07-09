@@ -1,6 +1,6 @@
 import datetime
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, AbstractUser
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from django.db import models
 from django.db.models import CheckConstraint, Q

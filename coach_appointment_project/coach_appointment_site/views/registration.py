@@ -24,6 +24,7 @@ def signup_view(request):
     customer_group, created = Group.objects.get_or_create(name='customer')
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
+
         if form.is_valid():
             # Saves the user as inactive and attach it to customer group
             user = form.save(commit=False)
@@ -45,6 +46,8 @@ def signup_view(request):
             email.send()
 
             return redirect("coach_appointment_site:signup_success")
+        else:
+            print(form.errors)
     else:
         form = CustomUserCreationForm()
 
@@ -74,20 +77,11 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect("coach_appointment_site:index")
+            return redirect("coach_appointment_site:dashboard")
         else:
             print("erreurs:", form.errors)
     else:
         form = AuthenticationForm()
-
-
-        # username = request.POST["username"]
-        # password = request.POST["password"]
-        # user = authenticate(request, username=username, password=password)
-        # if user is not None:
-        #     print("connection active")
-        #     login(request, user)
-        #     return redirect("coach_appointment_site:index")
 
     return render(request, "registration/login.html", {"form": form})
 

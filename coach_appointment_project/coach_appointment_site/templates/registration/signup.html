@@ -1,70 +1,124 @@
 {% extends "../coach_appointment_site/base.html" %}
 
-{% block title %}Coach Appointment App - Accueil{% endblock %}
+{% block title %}Coach Appointment App - Signup{% endblock %}
 
 {% block content %}
-    <form method="POST">
+    <div class="w-lg p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+        <form class="max-w-sm mx-auto" method="post">
+            {% csrf_token %}
 
-        {% csrf_token %}
-        <input type="hidden" name="group" value="{{ customer_group.id }}">
+            <input type="hidden" name="group" value="{{ customer_group.id }}">
 
-        <p>
-            {{ form.username.label_tag }}<br>
-            {{ form.username }}
-            {% for error in form.username.errors %}
-              <span style="color:red">{{ error }}</span>
-            {% endfor %}
-          </p>
+            {% if form.is_bound %}
+                {% if form.username.errors %}
+                        <label for="username" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Username</label>
+                          <input type="text" id="username" name="username" value="{{ form.username.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
+                          {% for error in form.username.errors %}
+                     <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+                {% endfor %}
+                {% else %}
+                <label for="username" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">Username</label>
+                          <input type="text" id="username" name="username" value="{{ form.username.value }}" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
+                {% endif %}
+            {% else %}
+                <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+                 <input type="text" id="username" name="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
 
-          <p>
-            {{ form.password1.label_tag }}<br>
-            {{ form.password1 }}
-            {% for error in form.password1.errors %}
-              <span style="color:red">{{ error }}</span>
-            {% endfor %}
-          </p>
+            {% endif %}
 
-          <p>
-            {{ form.password2.label_tag }}<br>
-            {{ form.password2 }}
-            {% for error in form.password2.errors %}
-              <span style="color:red">{{ error }}</span>
-            {% endfor %}
-          </p>
+        {% if form.is_bound %}
+                {% if form.first_name.errors %}
+                        <label for="first_name" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">First name</label>
+                          <input type="text" id="first_name" name="first_name" value="{{ form.first_name.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
+                          {% for error in form.first_name.errors %}
+                     <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+                {% endfor %}
+                {% else %}
+                <label for="first_name" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">First name</label>
+                          <input type="text" id="first_name" name="first_name" value="{{ form.first_name.value }}" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
+                {% endif %}
+            {% else %}
+                <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First name</label>
+                 <input type="text" id="first_name" name="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
 
-            <p>
-            {{ form.email.label_tag }}<br>
-            {{ form.email }}
-            {% for error in form.email.errors %}
-              <span style="color:red">{{ error }}</span>
-            {% endfor %}
-          </p>
+            {% endif %}
 
-        <p>
-            {{ form.first_name.label_tag }}<br>
-            {{ form.first_name }}
-            {% for error in form.first_name.errors %}
-              <span style="color:red">{{ error }}</span>
-            {% endfor %}
-          </p>
+{% if form.is_bound %}
+                {% if form.last_name.errors %}
+                        <label for="last_name" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Last name</label>
+                          <input type="text" id="last_name" name="last_name" value="{{ form.last_name.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
+                          {% for error in form.last_name.errors %}
+                     <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+                {% endfor %}
+                {% else %}
+                <label for="last_name" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">Last name</label>
+                          <input type="text" id="last_name" name="last_name" value="{{ form.last_name.value }}" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
+                {% endif %}
+            {% else %}
+                <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
+                 <input type="text" id="last_name" name="last_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
 
-        <p>
-            {{ form.last_name.label_tag }}<br>
-            {{ form.last_name }}
-            {% for error in form.last_name.errors %}
-              <span style="color:red">{{ error }}</span>
-            {% endfor %}
-          </p>
+            {% endif %}
 
-          {% if form.non_field_errors %}
-            <ul class="errorlist">
-              {% for error in form.non_field_errors %}
-                <li>{{ error }}</li>
-              {% endfor %}
-            </ul>
-          {% endif %}
 
-        <button type="submit">Signup</button>
-    </form>
+
+            {% if form.is_bound %}
+                {% if form.email.errors %}
+                        <label for="email" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Email</label>
+                          <input type="email" id="email" name="email" value="{{ form.email.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
+                          {% for error in form.email.errors %}
+                     <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+                {% endfor %}
+                {% else %}
+                <label for="email" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">Email</label>
+                          <input type="email" id="email" name="email" value="{{ form.email.value }}" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
+                {% endif %}
+            {% else %}
+                <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                 <input type="email" id="email" name="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Email" required/>
+
+            {% endif %}
+
+            {% if form.is_bound %}
+                {% if form.password1.errors %}
+                        <label for="password1" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Password</label>
+                          <input type="text" id="password1" name="password1" value="{{ form.password1.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
+                          {% for error in form.password1.errors %}
+                             <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+                        {% endfor %}
+                {% else %}
+                <label for="password1" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">Password</label>
+                          <input type="text" id="password1" name="password1" value="{{ form.password1.value }}" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
+                {% endif %}
+            {% else %}
+                <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
+                 <input type="text" id="last_name" name="last_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+
+            {% endif %}
+
+            {% if form.is_bound %}
+                {% if form.password2.errors %}
+                        <label for="password2" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Password (repeat)</label>
+                          <input type="text" id="password2" name="password2" value="{{ form.password2.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
+                          {% for error in form.password2.errors %}
+                             <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+                        {% endfor %}
+                {% else %}
+                <label for="password2" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">Password (repeat)</label>
+                          <input type="text" id="password2" name="password2" value="{{ form.password2.value }}" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
+                {% endif %}
+            {% else %}
+                <label for="password2" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password (repeat)</label>
+                 <input type="text" id="password2" name="password2" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
+
+            {% endif %}
+
+
+
+            <div class="flex justify-center">
+                <button class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mt-2" type="submit">Signup</button>
+            </div>
+        </form>
+    </div>
 
 {% endblock %}

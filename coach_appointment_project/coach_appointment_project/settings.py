@@ -62,6 +62,7 @@ MIDDLEWARE = [
     'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
+
 TESTING = "test" in sys.argv or "PYTEST_VERSION" in os.environ
 
 if not TESTING:

@@ -22,7 +22,7 @@ class CustomUserCreationForm(UserCreationForm):
     def clean(self):
         cleaned_data = super().clean()
         username = cleaned_data.get("username")
-        email = cleaned_data["email"]
+        email = cleaned_data.get("email")
         errors = {}
 
         if User.objects.filter(email=email).exists():
@@ -31,7 +31,7 @@ class CustomUserCreationForm(UserCreationForm):
             errors["username"] = "This username is already registered."
         if errors:
             raise ValidationError(errors)
-        return email
+        return cleaned_data
 
 class AppointmentCreationForm(ModelForm):
     date = forms.DateField(
