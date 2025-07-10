@@ -23,7 +23,6 @@
             {% else %}
                 <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
                  <input type="text" id="username" name="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-
             {% endif %}
 
         {% if form.is_bound %}
@@ -43,7 +42,7 @@
 
             {% endif %}
 
-{% if form.is_bound %}
+            {% if form.is_bound %}
                 {% if form.last_name.errors %}
                         <label for="last_name" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Last name</label>
                           <input type="text" id="last_name" name="last_name" value="{{ form.last_name.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
@@ -82,34 +81,33 @@
             {% if form.is_bound %}
                 {% if form.password1.errors %}
                         <label for="password1" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Password</label>
-                          <input type="text" id="password1" name="password1" value="{{ form.password1.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
+                          <input type="password" id="password1" name="password1" value="{{ form.password1.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
                           {% for error in form.password1.errors %}
                              <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
                         {% endfor %}
                 {% else %}
                 <label for="password1" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">Password</label>
-                          <input type="text" id="password1" name="password1" value="{{ form.password1.value }}" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
+                          <input type="password" id="password1" name="password1" value="{{ form.password1.value }}" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
                 {% endif %}
             {% else %}
-                <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
-                 <input type="text" id="last_name" name="last_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-
+                <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                 <input type="password" id="password1" name="password1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
             {% endif %}
 
             {% if form.is_bound %}
                 {% if form.password2.errors %}
                         <label for="password2" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Password (repeat)</label>
-                          <input type="text" id="password2" name="password2" value="{{ form.password2.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
+                          <input type="password" id="password2" name="password2" value="{{ form.password2.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
                           {% for error in form.password2.errors %}
                              <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
                         {% endfor %}
                 {% else %}
                 <label for="password2" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">Password (repeat)</label>
-                          <input type="text" id="password2" name="password2" value="{{ form.password2.value }}" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
+                          <input type="password" id="password2" name="password2" value="{{ form.password2.value }}" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
                 {% endif %}
             {% else %}
                 <label for="password2" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password (repeat)</label>
-                 <input type="text" id="password2" name="password2" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
+                 <input type="password" id="password2" name="password2" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
 
             {% endif %}
 

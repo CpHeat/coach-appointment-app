@@ -14,6 +14,8 @@ urlpatterns = [
     path("", views.index_view, name="index"),
     path("dashboard/", views.dashboard_view, name="dashboard"),
     path("user/create/", views.create_user_view, name="create_user"),
-    path("appointment/<int:appointment_id>/update/", views.update_appointment_view, name="update_appointment"),
+    path("appointment/<int:appointment_id>/add-note/", views.add_appointment_note_view, name="add_appointment_note"),
     path("appointment/<int:appointment_id>/delete/", views.delete_appointment_view, name="delete_appointment"),
+    path("profile/update/", views.update_profile_view, name="update_profile"),
+    path("profile/", views.profile_view, name="profile"),
 ] + debug_toolbar_urls()

@@ -4,130 +4,181 @@
 {% if user.is_authenticated %}
     <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
         <form class="max-w-sm mx-auto" method="post">
-            {% csrf_token %}
+        {% csrf_token %}
 
-            {% for field in form %}
-                {% if field.name == 'coach' %}
-                    {% if user|has_group:"customer" or user|has_group:"admin" %}
-                        {% if user|has_group:"customer" %}
-                            <input type="hidden" name="customer" value="{{ request.user.id }}">
-                        {% endif %}
-                        <div class="mb-5">
-                            <label for="coach" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Select your coach
-                            </label>
-                            <select id="coach" name="coach" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                {% for choice in form.coach.field.queryset %}
-                                    <option value="{{ choice.pk }}">
-                                        {{ choice }}
-                                    </option>
-                                {% endfor %}
-                            </select>
+        {% if user|has_group:"customer" %}
+            <input type="hidden" name="customer" value="{{ request.user.id }}">
+        {% elif user|has_group:"coach" %}
+            <input type="hidden" name="coach" value="{{ request.user.id }}">
+        {% endif %}
 
-                            {% if form.coach.errors %}
-                                <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-                                    {{ form.coach.errors.as_text|striptags }}
-                                </p>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                {% endif %}
+        <!-- customer -->
+        {% if user|has_group:"coach" or user|has_group:"admin" %}
 
-                {% if field.name == 'customer' %}
-                    {% if user|has_group:"coach" or user|has_group:"admin" %}
-                        {% if user|has_group:"coach" %}
-                            <input type="hidden" name="coach" value="{{ request.user.id }}">
-                        {% endif %}
-                        <div class="mb-5">
-                            <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select your customer</label>
-                            <select id="customer" name="customer" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                {% for choice in form.customer.field.queryset %}
-                                    <option value="{{ choice.pk }}">{{ choice }}</option>
-                                {% endfor %}
-                            </select>
+            {% if form.is_bound %}
 
-
-                            {% if form.customer.errors %}
-                                <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-                                    {{ form.customer.errors.as_text|striptags }}
-                                </p>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                {% endif %}
-
-                {% if field.name == 'date' %}
-                    <div class="mb-5">
-                        <label for="date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ field.label }}</label>
-                        <input datepicker id="date" name="date" placeholder="Select a date" value="{{ field.value }}" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-
-                        {% if form.date.errors %}
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-                                {{ form.date.errors.as_text|striptags }}
-                            </p>
-                        {% endif %}
-                    </div>
-                {% endif %}
-
-                {% if field.name == 'time' %}
-                    <div class="mb-5">
-                        <label for="time" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select time</label>
-                        <select id="time" name="time" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            {% for option in field.field.choices %}
-                                <option value="{{ option.0 }}" {% if option.0 in form.taken_times %}disabled{% endif %}
-                                {% if option.0 == field.value %}selected{% endif %}>{{ option.1 }}</optiondisabled>
-                            {% endfor %}
-                        </select>
-
-                        {% if form.time.errors %}
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-                                {{ form.time.errors.as_text|striptags }}
-                            </p>
-                        {% endif %}
-                    </div>
-                {% endif %}
-
-                {% if field.name == 'subject' %}
-                    <div class="mb-5">
-                        <label for="subject" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subject of appointment</label>
-                        <textarea id="subject" name="subject" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your expectations here..."></textarea>
-
-                        {% if form.subject.errors %}
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-                                {{ form.subject.errors.as_text|striptags }}
-                            </p>
-                        {% endif %}
-                    </div>
-                {% endif %}
-
-            {% endfor %}
-
-            {% if form.non_field_errors %}
-                <div class="text-red-600 mb-4">
-                    {% for error in form.non_field_errors %}
-                        <p>{{ error }}</p>
+                {% if form.customer.errors %}
+                    <label for="customer" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Select your customer</label>
+                    <select id="customer" name="customer" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500">
+                        {% for choice in form.customer.field.queryset %}
+                            <option value="{{ choice.pk }}">
+                                {{ choice.first_name }} {{ choice.last_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% for error in form.customer.errors %}
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
                     {% endfor %}
+                {% else %}
+                    <label for="customer" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">Select your customer</label>
+                    <select type="text" id="customer" name="customer"  class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
+                        {% for choice in form.customer.field.queryset %}
+                            <option value="{{ choice.pk }}">
+                                {{ choice.first_name }} {{ choice.last_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+            {% else %}
+                <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select your customer</label>
+                <select type="text" id="customer" name="customer" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                    {% for choice in form.customer.field.queryset %}
+                        <option value="{{ choice.pk }}">
+                            {{ choice.first_name }} {{ choice.last_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+        {% endif %}
+
+        <!-- coach -->
+        {% if user|has_group:"customer" or user|has_group:"admin" %}
+
+            {% if form.is_bound %}
+
+                {% if form.coach.errors %}
+                    <label for="coach" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Select your coach</label>
+                    <select id="coach" name="coach" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500">
+                        {% for choice in form.coach.field.queryset %}
+                            <option value="{{ choice.pk }}">
+                                {{ choice.first_name }} {{ choice.last_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% for error in form.coach.errors %}
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+                    {% endfor %}
+                {% else %}
+                    <label for="coach" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">Select your coach</label>
+                    <select type="text" id="coach" name="coach"  class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
+                        {% for choice in form.coach.field.queryset %}
+                            <option value="{{ choice.pk }}">
+                                {{ choice.first_name }} {{ choice.last_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+            {% else %}
+                <label for="coach" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select your coach</label>
+                <select type="text" id="coach" name="coach" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                    {% for choice in form.coach.field.queryset %}
+                        <option value="{{ choice.pk }}">
+                            {{ choice.first_name }} {{ choice.last_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+        {% endif %}
+
+        <!-- date -->
+        {% if form.is_bound %}
+            {% if form.date.errors %}
+            <label for="date" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Date</label>
+            <input datepicker id="date" name="date" autocomplete="off" value="{{ form.date.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
+                {% for error in form.date.errors %}
+                    <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+                {% endfor %}
+            {% else %}
+                <label for="date" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">Date</label>
+                <input type="text" id="date" name="date" autocomplete="off" value="{{ form.date.value }}" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
+            {% endif %}
+        {% else %}
+            <label for="date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pick a date</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                    </svg>
                 </div>
-            {% endif %}
-
-            {% if form.errors %}
-              <ul class="errors">
-              {% for field, errors in form.errors.items %}
-                <li><strong>{{ field }}</strong>:
-                  <ul>
-                    {% for error in errors %}
-                      <li>{{ error }}</li>
-                    {% endfor %}
-                  </ul>
-                </li>
-              {% endfor %}
-              </ul>
-            {% endif %}
-            <div class="flex justify-center">
-                <button class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" type="submit">Create appointment</button>
+                <input datepicker id="date" name="date" autocomplete="off" placeholder="Pick a date" value="{{ form.date.value }}" type="text" class="ps-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             </div>
-        </form>
-    </div>
-{% else %}
-  <p>Cette page nécessite d'être connecté</p>
+        {% endif %}
+
+
+        {% if form.is_bound %}
+            {% if form.time.errors %}
+                <label for="time" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Time</label>
+                <select id="time" name="time"  class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
+                    {% for option in form.time.field.choices %}
+                        <option value="{{ option.0 }}"
+                            {% if option.0 == form.time.value %}selected{% endif %}>{{ option.1 }}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% for error in form.time.errors %}
+                    <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+                {% endfor %}
+            {% else %}
+                <label for="time" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">Time</label>
+                <select  id="time" name="time" autocomplete="off" value="{{ form.time.value }}" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required>
+                    {% for option in form.time.field.choices %}
+                        <option value="{{ option.0 }}"
+                        {% if option.0 == form.time.value %}selected{% endif %}>{{ option.1 }}</option>
+                    {% endfor %}
+            {% endif %}
+        {% else %}
+            <label for="time" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select time</label>
+            <select id="time" name="time" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                {% for option in form.time.field.choices %}
+                    <option value="{{ option.0 }}"
+                    {% if option.0 == form.time.value %}selected{% endif %}>{{ option.1 }}</option>
+                {% endfor %}
+            </select>
+        {% endif %}
+
+        {% if form.is_bound %}
+            {% if form.subject.errors %}
+                <label for="subject" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Subject</label>
+                <textarea id="subject" name="subject" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required  placeholder="Write your expectations here...">
+{% if form.subject.value %}{{ form.subject.value }}{% endif %}
+                </textarea>
+                {% for error in form.subject.errors %}
+                <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+                {% endfor %}
+            {% else %}
+                <label for="subject" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">Subject</label>
+                <textarea id="subject" name="subject" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" required  placeholder="Write your expectations here...">
+{% if form.subject.value %}{{ form.subject.value }}{% endif %}
+                </textarea>
+            {% endif %}
+        {% else %}
+            <label for="subject" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">subject</label>
+            <textarea id="subject" name="subject" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required  placeholder="Write your expectations here...">
+{% if form.subject.value %}{{ form.subject.value }}{% endif %}
+            </textarea>
+        {% endif %}
+
+        {% if form.non_field_errors %}
+            <div class="text-red-600 mb-4">
+            {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+            {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="flex justify-center">
+            <button name="form_type" value="schedule" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" type="submit">Create appointment</button>
+        </div>
+    </form>
+</div>
 {% endif %}
