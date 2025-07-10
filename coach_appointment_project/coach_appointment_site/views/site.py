@@ -83,6 +83,11 @@ def dashboard_view(request):
 def index_view(request):
     return render(request, "coach_appointment_site/index.html", {})
 
+@group_required([])
 def profile_view(request):
     profile = request.user.profile
     return render(request, "coach_appointment_site/profile.html", {'profile': profile})
+
+def coaches_view(request):
+    coaches = User.objects.filter(groups__name='coach')
+    return render(request, "coach_appointment_site/coaches.html", {"coaches": coaches})

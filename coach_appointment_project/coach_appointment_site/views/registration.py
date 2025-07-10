@@ -21,6 +21,8 @@ def access_denied_view(request, required_role=None):
         {"required_role": required_role})
 
 def signup_view(request):
+    if request.user.is_authenticated:
+        return redirect('coach_appointment_site:dashboard')
     customer_group, created = Group.objects.get_or_create(name='customer')
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
@@ -54,9 +56,13 @@ def signup_view(request):
     return render(request, "registration/signup.html", {"form": form, "customer_group": customer_group})
 
 def signup_success_view(request):
+    if request.user.is_authenticated:
+        return redirect('coach_appointment_site:dashboard')
     return render(request,'registration/signup_success.html')
 
 def activate_account(request, uidb64, token):
+    if request.user.is_authenticated:
+        return redirect('coach_appointment_site:dashboard')
     User = get_user_model()
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -72,6 +78,8 @@ def activate_account(request, uidb64, token):
         return render(request, 'registration/activation_invalid.html')
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('coach_appointment_site:dashboard')
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():

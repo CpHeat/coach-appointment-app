@@ -1,0 +1,32 @@
+{% extends "./base.html" %}
+
+{% load static %}
+{% load user_extras %}
+
+{% block title %}Coach Appointment App - Coaches{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
+    Meet our coaches!
+</h2>
+<div class="w-1/2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+    {% for coach in coaches %}
+        <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+          <img class="w-full h-96 object-cover" src="{{ STATIC_URL }}../static/coach_appointment_site/images/coaches/{{ coach.profile.avatar }}.jpg" alt="Profile photo">
+
+          <div class="p-6 text-center">
+            <h5 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ coach.first_name }} {{ coach.last_name }}</h5>
+            <p class="text-lg text-gray-500 dark:text-gray-400 mb-4">{{ coach.profile.discipline }}</p>
+            <p class="text-gray-700 dark:text-gray-300">
+                {{ coach.profile.bio }}
+            </p>
+          </div>
+        </div>
+
+
+
+
+
+{% endfor %}
+</div>
+{% endblock %}
