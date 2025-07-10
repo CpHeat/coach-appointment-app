@@ -7,24 +7,30 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from ..decorators import group_required
-from ..forms import AppointmentCreationForm
+from ..forms import AppointmentCreationForm, AppointmentNoteForm
 from ..models import Appointment
 
 
 @group_required([])
 def dashboard_view(request):
     user = request.user
-    # Form
+    # Appointment form
     if request.method == "POST":
         form = AppointmentCreationForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            appointment = form.save(commit=False)
+            if request.user.groups.filter(name='coach').exists():
+                appointment.coach = request.user
+            elif request.user.groups.filter(name='customer').exists():
+                appointment.customer = request.user
+            appointment.save()
             return redirect("coach_appointment_site:dashboard")
         else:
             print(form.errors)
     else:
         form = AppointmentCreationForm(initial={'date': datetime.date.today()})
+
     # Dashboard
     if user.groups.filter(name='admin').exists():
         appointments = Appointment.objects.all()
@@ -55,12 +61,12 @@ def dashboard_view(request):
     elif user.groups.filter(name='customer').exists():
         upcoming_appointments = [
             appointment for appointment in Appointment.objects.filter(customer=user)
-            if datetime.combine(appointment.date, appointment.time) >= timezone.now()
+            if timezone.make_aware(datetime.datetime.combine(appointment.date, appointment.time)) >= timezone.now()
         ]
 
         past_appointments = [
             appointment for appointment in Appointment.objects.filter(customer=user)
-            if datetime.combine(appointment.date, appointment.time) < timezone.now()
+            if timezone.make_aware(datetime.datetime.combine(appointment.date, appointment.time)) < timezone.now()
         ]
 
         coaches = User.objects.filter(
@@ -76,3 +82,7 @@ def dashboard_view(request):
 
 def index_view(request):
     return render(request, "coach_appointment_site/index.html", {})
+
+def profile_view(request):
+    profile = request.user.profile
+    return render(request, "coach_appointment_site/profile.html", {'profile': profile})

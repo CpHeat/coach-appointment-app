@@ -1,16 +1,45 @@
 {% extends "../base.html" %}
 
+{% block title %}Coach Appointment App - Login{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h2>Modifier le rendez-vous</h2>
+<div class="w-md p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+    <form class="max-w-sm mx-auto" method="post">
+    {% csrf_token %}
 
-    <form method="post">
-        {% csrf_token %}
-        
-        {{ form.as_p }}
+    {% if form.is_bound %}
+        {% if form.customer.errors %}
+            <label for="note" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">
+                Add a note for your appointment with {{ appointment.customer.first_name }} {{ appointment.customer.last_name }} on {{ appointment.date }} - {{ appointment.time }}
+            </label>
+            <textarea id="note" name="note" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500">
+{% if form.appointment.note %}{{ form.appointment.note }}{% elif appointment.note %}{{ appointment.note }}{% endif %}
+            </textarea>
+            {% for error in form.note.errors %}
+                <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+            {% endfor %}
+        {% else %}
+            <label for="note" class="block mb-2 text-sm font-medium text-green-700 dark:text-green-500">
+                Add a note for your appointment with {{ appointment.customer.first_name }} {{ appointment.customer.last_name }} on {{ appointment.date }} - {{ appointment.time }}
+            </label>
+            <textarea id="note" name="note" class="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500">
+{% if form.appointment.note %}{{ form.appointment.note }}{% elif appointment.note %}{{ appointment.note }}{% endif %}
+            </textarea>
+        {% endif %}
+    {% else %}
+        <label for="note" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            Add a note for your appointment with {{ appointment.customer.first_name }} {{ appointment.customer.last_name }} on {{ appointment.date }} - {{ appointment.time }}
+        </label>
+        <textarea id="note" name="note" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+{% if appointment.note %}{{ appointment.note }}{% endif %}
+        </textarea>
+    {% endif %}
 
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <a href="{% url 'coach_appointment_site:dashboard' %}" class="btn btn-secondary">Annuler</a>
+    <div class="flex justify-center">
+            <button name="form_type" value="note" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" type="submit">
+                Add note
+            </button>
+        </div>
     </form>
 </div>
 {% endblock %}

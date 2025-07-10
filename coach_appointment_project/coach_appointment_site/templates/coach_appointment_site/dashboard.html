@@ -9,6 +9,10 @@
 
 {% if user.is_authenticated %}
 
+    <p class="text-gray-700 text-xl dark:text-gray-300 mb-6 text-lg font-bold">
+        Welcome {{ user.first_name }} {{ user.last_name }}!
+    </p>
+
     <!-- coach dashboard -->
     {% if user|has_group:"coach" %}
         <div class="w-3/4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
@@ -37,7 +41,7 @@
                             <li class="pb-3 sm:pb-4">
                                 <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                      <div class="shrink-0">
-                                        <img class="w-8 h-8 rounded-full" src="{% static 'coach_appointment_site/images/customers/1.jpg' %}" alt="{{ customer.username }} image">
+                                        <img class="w-8 h-8 rounded-full" src="{{ STATIC_URL }}../static/coach_appointment_site/images/customers/{{ appointment.customer.profile.avatar }}.jpg" alt="{{ customer.username }} image">
                                      </div>
                                      <div class="flex-1 min-w-0">
                                         <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
@@ -47,10 +51,19 @@
                                             {{ appointment.subject }}
                                         </p>
                                      </div>
+                                    <div class="flex-2 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                            {% if appointment.note %}{{ appointment.note }}{% endif %}
+                                        </p>
+                                    </div>
                                     <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
                                         {{ appointment.date }} - {{ appointment.time|time:"H:i" }}
                                      </div>
-                                    <button type="button" class="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-sm rounded-md text-xs px-2 py-1 text-center me-2">update</button>
+                                    <a href="{% url 'coach_appointment_site:add_appointment_note' appointment.id %}">
+                                        <button type="button" class="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-sm rounded-md text-xs px-2 py-1 text-center me-2">
+                                            Add a note
+                                        </button>
+                                    </a>
                                     <form action="{% url 'coach_appointment_site:delete_appointment' appointment.id %}" method="post"  onsubmit="return confirm('Are you sure you want to cancel this appointment?');" class="inline">
                                         {% csrf_token %}
                                         <button type="submit"
@@ -69,7 +82,9 @@
                     {% endif %}
 
                     <div class="flex justify-center">
-                        <button type="button" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-drawer-target="drawer-form" data-drawer-show="drawer-form" aria-controls="drawer-form">Schedule an appointment</button>
+                        <button type="button" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-drawer-target="schedule-drawer-form" data-drawer-show="schedule-drawer-form" aria-controls="schedule-drawer-form">
+                            Schedule an appointment
+                        </button>
                     </div>
                 </div>
                 <!-- past appointments tab -->
@@ -82,7 +97,7 @@
                             <li class="pb-3 sm:pb-4">
                                 <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                      <div class="shrink-0">
-                                        <img class="w-8 h-8 rounded-full" src="{% static 'coach_appointment_site/images/customers/1.jpg' %}" alt="{{ customer.username }} image">
+                                        <img class="w-8 h-8 rounded-full" src="{{ STATIC_URL }}../static/coach_appointment_site/images/customers/{{ appointment.customer.profile.avatar }}.jpg" alt="{{ customer.username }} image">
                                      </div>
                                      <div class="flex-1 min-w-0">
                                         <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
@@ -161,8 +176,12 @@
                             <dd class="text-gray-500 dark:text-gray-400">Customers</dd>
                         </div>
                         <div class="flex flex-col">
-                            <dt class="mb-2 text-3xl font-extrabold">{{ appointments|length }}</dt>
-                            <dd class="text-gray-500 dark:text-gray-400">Appointments</dd>
+                            <dt class="mb-2 text-3xl font-extrabold">{{ upcoming_appointments|length }}</dt>
+                            <dd class="text-gray-500 dark:text-gray-400">Upcoming appointments</dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="mb-2 text-3xl font-extrabold">{{ past_appointments|length }}</dt>
+                            <dd class="text-gray-500 dark:text-gray-400">Past appointments</dd>
                         </div>
                     </dl>
                 </div>
@@ -174,7 +193,10 @@
         <div class="w-3/4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
                 <li class="me-2">
-                    <button id="appointments-tab" data-tabs-target="#appointments" type="button" role="tab" aria-controls="appointments" aria-selected="true" class="inline-block p-4 text-blue-600 rounded-ss-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-blue-500">Appointments</button>
+                    <button id="upcoming_appointments-tab" data-tabs-target="#upcoming_appointments" type="button" role="tab" aria-controls="upcoming_appointments" aria-selected="true" class="inline-block p-4 text-blue-600 rounded-ss-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-blue-500">Upcoming Appointments</button>
+                </li>
+                <li class="me-2">
+                    <button id="past_appointments-tab" data-tabs-target="#past_appointments" type="button" role="tab" aria-controls="past_appointments" aria-selected="false" class="inline-block p-4 text-blue-600 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-blue-500">Past Appointments</button>
                 </li>
                 <li class="me-2">
                     <button id="coaches-tab" data-tabs-target="#coaches" type="button" role="tab" aria-controls="coaches" aria-selected="false" class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300">Coaches</button>
@@ -183,28 +205,40 @@
                     <button id="statistics-tab" data-tabs-target="#statistics" type="button" role="tab" aria-controls="statistics" aria-selected="false" class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300">Statistics</button>
                 </li>
             </ul>
-            <!-- appointments tab -->
+            <!-- upcoming appointments tab -->
             <div id="defaultTabContent">
-                <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
+                <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="upcoming_appointments" role="tabpanel" aria-labelledby="upcoming_appointments-tab">
                     <h2 class="mb-3 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Upcoming appointments</h2>
 
-                    {% if appointments %}
+                    {% if upcoming_appointments %}
                         <ul class="w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        {% for appointment in appointments %}
+                        {% for appointment in upcoming_appointments %}
                             <li class="pb-3 sm:pb-4">
                                 <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                      <div class="shrink-0">
-                                        <img class="w-8 h-8 rounded-full" src="{% static 'coach_appointment_site/images/coaches/1.jpg' %}" alt="{{ coach.username }} image">
+                                        <img class="w-8 h-8 rounded-full" src="{{ STATIC_URL }}../static/coach_appointment_site/images/coaches/{{ appointment.coach.profile.avatar }}.jpg" alt="{{ coach.username }} image">
                                      </div>
                                      <div class="flex-1 min-w-0">
                                         <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
                                             {{ appointment.coach.first_name }} {{ appointment.coach.last_name }}
                                         </p>
+                                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                            {{ appointment.subject }}
+                                        </p>
                                      </div>
-                                     <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
                                         {{ appointment.date }} - {{ appointment.time|time:"H:i" }}
                                      </div>
-                                  </div>
+                                    <form action="{% url 'coach_appointment_site:delete_appointment' appointment.id %}" method="post"  onsubmit="return confirm('Are you sure you want to cancel this appointment?');" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                            class="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl
+                                                   focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800
+                                                   font-sm rounded-md text-xs px-2 py-1 text-center me-2">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                 </div>
                             </li>
                         {% endfor %}
                         </ul>
@@ -213,16 +247,48 @@
                     {% endif %}
 
                     <div class="flex justify-center">
-                        <button type="button" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-drawer-target="drawer-form" data-drawer-show="drawer-form" aria-controls="drawer-form">Schedule an appointment</button>
+                        <button type="button" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-drawer-target="schedule-drawer-form" data-drawer-show="schedule-drawer-form" aria-controls="schedule-drawer-form">
+                            Schedule an appointment
+                        </button>
                     </div>
+                </div>
+                <!-- past appointments tab -->
+                <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="past_appointments" role="tabpanel" aria-labelledby="past_appointments-tab">
+                    <h2 class="mb-3 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Past appointments</h2>
+
+                        {% if past_appointments %}
+                            <ul class="w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        {% for appointment in past_appointments %}
+                            <li class="pb-3 sm:pb-4">
+                                <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                     <div class="shrink-0">
+                                        <img class="w-8 h-8 rounded-full" src="{{ STATIC_URL }}../static/coach_appointment_site/images/coaches/{{ appointment.coach.profile.avatar }}.jpg" alt="{{ coach.username }} image">
+                                     </div>
+                                     <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                            {{ appointment.coach.first_name }} {{ appointment.coach.last_name }}
+                                        </p>
+                                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                            {{ appointment.subject }}
+                                        </p>
+                                     </div>
+                                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                        {{ appointment.date }} - {{ appointment.time|time:"H:i" }}
+                                     </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="mb-3 text-gray-500 dark:text-gray-400">You had no appointments.</p>
+                    {% endif %}
                 </div>
                 <!-- coaches tab -->
                 <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="coaches" role="tabpanel" aria-labelledby="coaches-tab">
-                    <h2 class="mb-5 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Your beloved coaches</h2>
+                    <h2 class="mb-5 text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">Your beloved coaches</h2>
 
-                    {% if appointments %}
+                    {% if upcoming_appointments or past_appointments %}
                         <div id="accordion-open" data-accordion="open">
-
                         {% for coach in coaches %}
                             <h2 id="accordion-open-heading-{{ coach.id }}">
                                 {% if forloop.first %}
@@ -242,6 +308,11 @@
                                 {% else %}
                             <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
                                 {% endif %}
+                                <img class="w-20 h-20 rounded-full mb-4"
+       src="{{ STATIC_URL }}../static/coach_appointment_site/images/coaches/{{ coach.profile.avatar }}.jpg" alt="Profile avatar">
+                                <p class="text-gray-700 text-sm dark:text-gray-300 mb-6 text-lg font-bold"><strong>Discipline: </strong>{{ coach.profile.discipline }}</p>
+  <p class="w-1/2 text-gray-700 text-sm dark:text-gray-300 mb-6 text-md font-bold"><strong>Bio: </strong>{{ coach.profile.bio }}</p>
+                                  <p class="w-1/2 text-gray-700 text-sm dark:text-gray-300 mb-6 text-md font-bold"><strong>Your appointments:</strong></p>
 
                                 <ul class="w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     {% for appointment in coach.appointments_coach.all %}
@@ -271,12 +342,16 @@
                 <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="statistics" role="tabpanel" aria-labelledby="statistics-tab">
                     <dl class="grid max-w-screen-xl grid-cols-2 gap-8 p-4 mx-auto text-gray-900 sm:grid-cols-3 xl:grid-cols-6 dark:text-white sm:p-8">
                         <div class="flex flex-col">
-                            <dt class="mb-2 text-3xl font-extrabold">{{ customers|length }}</dt>
-                            <dd class="text-gray-500 dark:text-gray-400">Customers</dd>
+                            <dt class="mb-2 text-3xl font-extrabold">{{ coaches|length }}</dt>
+                            <dd class="text-gray-500 dark:text-gray-400">Coaches</dd>
                         </div>
                         <div class="flex flex-col">
-                            <dt class="mb-2 text-3xl font-extrabold">{{ appointments|length }}</dt>
-                            <dd class="text-gray-500 dark:text-gray-400">Appointments</dd>
+                            <dt class="mb-2 text-3xl font-extrabold">{{ upcoming_appointments|length }}</dt>
+                            <dd class="text-gray-500 dark:text-gray-400">Upcoming appointments</dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="mb-2 text-3xl font-extrabold">{{ past_appointments|length }}</dt>
+                            <dd class="text-gray-500 dark:text-gray-400">Past appointments</dd>
                         </div>
                     </dl>
                 </div>
@@ -287,24 +362,18 @@
 {% endif %}
 
 
-
-
-<!-- drawer component -->
-<div id="drawer-form" class="fixed top-0 left-0 w-lg z-40 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-form-label">
-   <h5 id="drawer-label" class="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400"><svg class="w-3.5 h-3.5 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+<!-- schedule appointment drawer component -->
+<div id="schedule-drawer-form" class="fixed top-0 left-0 w-lg z-40 h-screen p-4 overflow-y-auto transition-transform {% if form.errors %}-translate-x-0{% else %}-translate-x-full{% endif %} bg-white dark:bg-gray-800" tabindex="-1" aria-labelledby="schedule-drawer-form-label">
+   <h5 id="schedule-drawer-label" class="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400"><svg class="w-3.5 h-3.5 me-2.5" aria-hidden="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
     <path d="M0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm14-7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm-5-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm-5-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4Z"/>
   </svg>New appointment</h5>
-   <button type="button" data-drawer-hide="drawer-form" aria-controls="drawer-form" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white" >
+   <button type="button" data-drawer-hide="schedule-drawer-form" aria-controls="schedule-drawer-form" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white" >
       <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
       </svg>
       <span class="sr-only">Close menu</span>
    </button>
-
     {% include "./forms/schedule_appointment.html" %}
-
-
 </div>
-
 
 {% endblock %}

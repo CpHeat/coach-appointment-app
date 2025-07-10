@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Appointment
+from .models import Appointment, Profile
 
 
 class AppointmentAdmin(admin.ModelAdmin):
@@ -14,3 +14,4 @@ class AppointmentAdmin(admin.ModelAdmin):
     search_fields = ['subject']
 
 admin.site.register(Appointment, AppointmentAdmin)
+admin.site.register(Profile)
