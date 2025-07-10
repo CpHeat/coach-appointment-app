@@ -5,6 +5,8 @@
 {% url 'coach_appointment_site:dashboard' as dashboard_url %}
 {% url 'coach_appointment_site:create_user' as create_user_url %}
 {% url 'coach_appointment_site:login' as login_url %}
+{% url 'coach_appointment_site:coaches' as coaches_url %}
+
 <header>
     <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
         <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
@@ -14,9 +16,6 @@
             </a>
             <div class="flex items-center lg:order-2">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'coach_appointment_site:logout' %}" class="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
-                        Log out
-                    </a>
                     <a href="{% url 'coach_appointment_site:profile' %}">
                         {% if user.profile.avatar %}
                         {% if not user|has_group:'admin' and user|has_group:'coach' %}
@@ -29,6 +28,9 @@
                               <span class="font-medium text-gray-600 dark:text-gray-300">{{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}</span>
                           </div>
                         {% endif %}
+                    </a>
+                    <a href="{% url 'coach_appointment_site:logout' %}" class="text-bold block px-4 lg:px-5 py-2 lg:py-2.5 mr-2 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                        Log out
                     </a>
                 {% else %}
                     {% if request.path == login_url %}
@@ -55,6 +57,17 @@
                             <a href="{% url 'coach_appointment_site:index' %}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
                         {% endif %}
                             Home
+                        </a>
+                    </li>
+                </ul>
+                <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0 mx-2">
+                    <li>
+                        {% if request.path == coaches_url %}
+                            <a href="{% url 'coach_appointment_site:coaches' %}" class="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">
+                        {% else %}
+                            <a href="{% url 'coach_appointment_site:coaches' %}" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                        {% endif %}
+                            Coaches
                         </a>
                     </li>
                 </ul>

@@ -310,9 +310,9 @@
                                 {% endif %}
                                 <img class="w-20 h-20 rounded-full mb-4"
        src="{{ STATIC_URL }}../static/coach_appointment_site/images/coaches/{{ coach.profile.avatar }}.jpg" alt="Profile avatar">
-                                <p class="text-gray-700 text-sm dark:text-gray-300 mb-6 text-lg font-bold"><strong>Discipline: </strong>{{ coach.profile.discipline }}</p>
+                                <p class="text-gray-700 text-sm dark:text-gray-300 mb-6 text-xl font-bold"><strong>Discipline: </strong>{{ coach.profile.discipline }}</p>
   <p class="w-1/2 text-gray-700 text-sm dark:text-gray-300 mb-6 text-md font-bold"><strong>Bio: </strong>{{ coach.profile.bio }}</p>
-                                  <p class="w-1/2 text-gray-700 text-sm dark:text-gray-300 mb-6 text-md font-bold"><strong>Your appointments:</strong></p>
+                                  <p class="w-1/2 text-gray-700 text-sm dark:text-gray-300 mb-6 text-lg font-bold"><strong>Your appointments:</strong></p>
 
                                 <ul class="w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     {% for appointment in coach.appointments_coach.all %}
