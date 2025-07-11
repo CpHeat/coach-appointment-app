@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<div class="w-2/3 grid mb-8 gap-2 md:grid-cols-4">
+<div class="w-2/3 grid mb-8 gap-2 md:grid-cols-4 mt-4">
     <div class="col-span-3 mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mt-0 text-center">
         <h2 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
             Bring out the best of yourself!
@@ -16,7 +16,7 @@
         </p>
         <div class="flex items-center justify-center">
             <a href="{% if user.is_authenticated and not user|has_group:'admin' %}/dashboard{% else %}/signup{% endif %}" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-xl px-5 py-2.5 text-center me-2 mt-2">
-                My journey starts now
+                My journey starts now!
             </a>
         </div>
     </div>
@@ -25,7 +25,7 @@
 <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">Standard plan</h5>
 <div class="flex items-baseline text-gray-900 dark:text-white">
 <span class="text-3xl font-semibold">$</span>
-<span class="text-5xl font-extrabold tracking-tight">49</span>
+<span class="text-5xl font-extrabold tracking-tight">149</span>
 <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">/month</span>
 </div>
 <ul role="list" class="space-y-5 my-7">
@@ -56,8 +56,7 @@
 </div>
 </div>
 
-
-<div class="grid mb-8 border border-gray-200 rounded-lg shadow-xs dark:border-gray-700 md:mb-12 md:grid-cols-4 bg-white dark:bg-gray-800">
+<div class="grid mb-8 border border-gray-200 rounded-lg shadow-xs dark:border-gray-700 md:mb-4 md:grid-cols-4 bg-white dark:bg-gray-800">
     <figure class="flex flex-col items-center justify-center p-8 text-center bg-white border border-gray-200 rounded-l-lg md:rounded-t-lg md:rounded-ss-lg md:border-e dark:bg-gray-800 dark:border-gray-700">
         <blockquote class="max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8 dark:text-gray-400">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Life-changing guidance</h3>

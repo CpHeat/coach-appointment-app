@@ -19,9 +19,9 @@
                     <a href="{% url 'coach_appointment_site:profile' %}">
                         {% if user.profile.avatar %}
                         {% if not user|has_group:'admin' and user|has_group:'coach' %}
-                        <img class="w-10 h-10 rounded-full" src="{{ STATIC_URL }}../static/coach_appointment_site/images/coaches/{{ user.profile.avatar }}.jpg" alt="Profile avatar">
+                        <img class="w-10 h-10 rounded-full" src="/static/coach_appointment_site/images/coaches/{{ user.profile.avatar }}.jpg" alt="Profile avatar">
                         {% elif not user|has_group:'admin' and user|has_group:'customer' %}
-                        <img class="w-10 h-10 rounded-full" src="{{ STATIC_URL }}../static/coach_appointment_site/images/customers/{{ user.profile.avatar }}.jpg" alt="Profile avatar">
+                        <img class="w-10 h-10 rounded-full" src="/static/coach_appointment_site/images/customers/{{ user.profile.avatar }}.jpg" alt="Profile avatar">
                         {% endif %}
                         {% else %}
                         <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">

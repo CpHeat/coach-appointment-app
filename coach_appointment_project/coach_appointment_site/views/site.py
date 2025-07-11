@@ -1,7 +1,9 @@
 import datetime
 import random
 
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.db.models import Prefetch
 from django.shortcuts import render, redirect
 from django.utils import timezone
@@ -25,6 +27,32 @@ def dashboard_view(request):
             elif request.user.groups.filter(name='customer').exists():
                 appointment.customer = request.user
             appointment.save()
+
+            subject = "New appointment"
+            message_customer = f"""
+                    Hello {appointment.customer.first_name} {appointment.customer.last_name},
+
+                    You have a new appointment with {appointment.coach.first_name} {appointment.coach.last_name} scheduled for the {appointment.date} at {appointment.time}.
+
+                    Can't wait to see you there!
+
+                    Yours truly,
+                    The Coach App team
+                    """
+            message_coach = f"""
+                    Hello {appointment.coach.first_name} {appointment.coach.last_name},
+
+                    You have a new appointment with {appointment.customer.first_name} {appointment.customer.last_name} scheduled for the {appointment.date} at {appointment.time}.
+
+                    Can't wait to see you there!
+
+                    Yours truly,
+                    The Coach App team
+                    """
+
+            send_mail(subject, message_customer, settings.DEFAULT_FROM_EMAIL, [appointment.customer.email])
+            send_mail(subject, message_coach, settings.DEFAULT_FROM_EMAIL, [appointment.coach.email])
+
             return redirect("coach_appointment_site:dashboard")
         else:
             print(form.errors)

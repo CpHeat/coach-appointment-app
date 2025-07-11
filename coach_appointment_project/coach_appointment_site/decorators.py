@@ -6,11 +6,6 @@ from django.urls import reverse
 
 
 def group_required(group_names=None, access_denied_view='coach_appointment_site:access_denied'):
-    """
-    Décorateur qui vérifie que l'utilisateur appartient à un des groupes spécifiés.
-    Si non connecté => redirige vers login.
-    Si connecté mais sans droits => redirige vers access_denied.
-    """
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):

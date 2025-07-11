@@ -1,6 +1,8 @@
 import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.shortcuts import redirect, render, get_object_or_404
 
 from ..decorators import group_required
@@ -26,8 +28,35 @@ def create_user_view(request):
 @group_required([])
 def delete_appointment_view(request, appointment_id):
     appointment = get_object_or_404(Appointment, id=appointment_id)
+
     if request.method == "POST":
         appointment.delete()
+
+        subject = "Appointment cancellation"
+        message_customer = f"""
+        Hello {appointment.customer.first_name} {appointment.customer.last_name},
+
+        Your appointment with {appointment.coach.first_name} {appointment.coach.last_name} scheduled for the {appointment.date} at {appointment.time} has been cancelled.
+
+        You can always reschedule an appointment through your dashboard.
+
+        Yours truly,
+        The Coach App team
+        """
+        message_coach = f"""
+        Hello {appointment.coach.first_name} {appointment.coach.last_name},
+
+        Your appointment with {appointment.customer.first_name} {appointment.customer.last_name} scheduled for the {appointment.date} at {appointment.time} has been cancelled.
+
+        You can always reschedule an appointment through your dashboard.
+
+        Yours truly,
+        The Coach App team
+        """
+
+        send_mail(subject, message_customer, settings.DEFAULT_FROM_EMAIL, [appointment.customer.email])
+        send_mail(subject, message_coach, settings.DEFAULT_FROM_EMAIL, [appointment.coach.email])
+
         return redirect("coach_appointment_site:dashboard")
     return redirect("coach_appointment_site:dashboard")
 

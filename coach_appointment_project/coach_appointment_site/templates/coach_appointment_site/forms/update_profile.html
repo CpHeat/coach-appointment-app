@@ -13,7 +13,16 @@
     <label for="discipline" class="block mb-2 text-sm font-medium {% if form.discipline.errors %}text-red-700 dark:text-red-500{% elif form.discipline.errors %}text-green-700 dark:text-green-500{% else %}text-gray-900 dark:text-white{% endif %}">
         Discipline
     </label>
-    <input type="text" value="{% if form.discipline and form.discipline.value %}{{ form.discipline.value }}{% elif profile.discipline %}{{ profile.discipline }}{% endif %}" id="discipline" name="discipline" class="{% if form.discipline.errors %}bg-red-50 border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500{% elif form.discipline.errors %}bg-green-50 border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500{% else %}bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500{% endif %} block text-sm rounded-lg w-full p-2.5 border dark:bg-gray-700"/>
+    <input type="text" value="
+{% if form.discipline and form.discipline.value %}
+{{ form.discipline.value }}
+{% elif profile.discipline %}
+{{ profile.discipline }}
+    {% endif %}" id="discipline" name="discipline" class="
+    {% if form.discipline.errors %}bg-red-50 border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
+    {% elif form.discipline.errors %}bg-green-50 border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500
+    {% else %}bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+    {% endif %} block text-sm rounded-lg w-full p-2.5 border dark:bg-gray-700"/>
     {% for error in form.discipline.errors %}
         <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
     {% endfor %}

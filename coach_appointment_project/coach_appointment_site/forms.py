@@ -38,8 +38,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 class AppointmentCreationForm(ModelForm):
     date = forms.DateField(
-        initial=timezone.now().date,
-        input_formats=['%m/%d/%Y'],
+        initial=timezone.now().date(),
         widget=forms.DateInput(attrs={'type': 'date'}))
 
     time = forms.TimeField(
