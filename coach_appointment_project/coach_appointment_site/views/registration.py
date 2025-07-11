@@ -36,8 +36,8 @@ def signup_view(request):
 
             # Sends the confirmation mail
             current_site = get_current_site(request)
-            mail_subject = 'Active ton compte.'
-            message = render_to_string('registration/account_activate_email.html', {
+            mail_subject = 'Activate your account.'
+            message = render_to_string('emails/account_activate_email.html', {
                 'user': user,
                 'domain': current_site.domain,
                 'uidb64': urlsafe_base64_encode(force_bytes(user.pk)),

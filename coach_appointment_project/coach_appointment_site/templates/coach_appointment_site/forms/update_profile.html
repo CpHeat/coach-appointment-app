@@ -1,5 +1,7 @@
 {% extends "../base.html" %}
 
+{% load user_extras %}
+
 {% block title %}Update profile{% endblock %}
 
 {% block content %}
@@ -9,7 +11,7 @@
     </p>
     <form class="max-w-sm mx-auto" method="post">
     {% csrf_token %}
-
+    {% if user|has_group:'coach' %}
     <label for="discipline" class="block mb-2 text-sm font-medium {% if form.discipline.errors %}text-red-700 dark:text-red-500{% elif form.discipline.errors %}text-green-700 dark:text-green-500{% else %}text-gray-900 dark:text-white{% endif %}">
         Discipline
     </label>
@@ -26,7 +28,7 @@
     {% for error in form.discipline.errors %}
         <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
     {% endfor %}
-
+{%  endif %}
     <label for="avatar" class="block mb-2 text-sm font-medium
      {% if form.avatar.errors %}text-red-700 dark:text-red-500
      {% elif form.avatar.errors %}text-green-700 dark:text-green-500
@@ -43,6 +45,7 @@
         <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
     {% endfor %}
 
+    {% if user|has_group:'coach' %}
     <label for="bio" class="block mb-2 text-sm font-medium {% if form.bio.errors %}
     text-red-700 dark:text-red-500{% elif form.bio.errors %}
     text-green-700 dark:text-green-500
@@ -63,7 +66,7 @@
         {% for error in form.bio.errors %}
         <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
     {% endfor %}
-
+{%  endif %}
     <div class="flex justify-center">
             <button name="form_type" value="note" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" type="submit">
                 Update profile

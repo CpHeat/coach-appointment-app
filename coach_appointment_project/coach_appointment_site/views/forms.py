@@ -2,8 +2,12 @@ import datetime
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail, EmailMessage
 from django.shortcuts import redirect, render, get_object_or_404
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 from ..decorators import group_required
 from ..forms import AppointmentCreationForm, CustomUserCreationForm, AppointmentNoteForm, ProfileForm
@@ -31,6 +35,28 @@ def delete_appointment_view(request, appointment_id):
 
     if request.method == "POST":
         appointment.delete()
+
+        # Sends the customer confirmation mail
+        current_site = get_current_site(request)
+        mail_subject = 'Activate your account.'
+        message = render_to_string('emails/customer_appointment_deleted_email.html', {
+            'domain': current_site.domain,
+            'appointment': appointment,
+        })
+        to_email = appointment.customer.email
+        email = EmailMessage(mail_subject, message, to=[to_email])
+        email.send()
+
+        # Sends the coach confirmation mail
+        current_site = get_current_site(request)
+        mail_subject = 'Activate your account.'
+        message = render_to_string('emails/coach_appointment_deleted_email.html', {
+            'domain': current_site.domain,
+            'appointment': appointment,
+        })
+        to_email = appointment.coach.email
+        email = EmailMessage(mail_subject, message, to=[to_email])
+        email.send()
 
         subject = "Appointment cancellation"
         message_customer = f"""

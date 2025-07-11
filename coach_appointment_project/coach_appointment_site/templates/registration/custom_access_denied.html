@@ -2,6 +2,8 @@
 {% load static %}
 {% load user_extras %}
 
+{% block title %}Access denied{% endblock %}
+
 {% block content %}
 {% if not user.is_authenticated %}
     <p class="text-gray-700 dark:text-gray-300 mb-6 text-lg">Vous devez être connecté pour accéder à cette page.</p>
