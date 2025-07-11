@@ -1,3 +1,5 @@
 django
 django-debug-toolbar
 django-tailwind[reload]
+django-widget-tweaks
+django-browser-reload
