@@ -1,0 +1,48 @@
+{% extends "../coach_appointment_site/base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="w-lg p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+    <form class="max-w-sm mx-auto" method="post">
+        {% csrf_token %}
+
+        {% if form.is_bound %}
+         {% if form.non_field_errors  %}
+            <label for="username" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Username</label>
+                              <input type="text" id="username" name="username" value="{{ form.username.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
+        {% endif %}
+        {% else %}
+        <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+         <input type="text" id="username" name="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+
+        {% endif %}
+
+        {% if form.is_bound %}
+         {% if form.non_field_errors  %}
+            <label for="password" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Password</label>
+                              <input type="password" id="password" name="password" value="{{ form.password.value }}" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500" required>
+        {% endif %}
+        {% else %}
+        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+         <input type="password" id="password" name="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+
+        {% endif %}
+
+
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+              {% for error in form.non_field_errors %}
+                <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        
+        <div class="flex justify-center">
+                <button class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mt-2" type="submit">
+                    Sign in
+                </button>
+            </div>
+    </form>
+</div>
+{% endblock %}

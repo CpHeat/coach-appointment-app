@@ -1,0 +1,77 @@
+{% extends "../base.html" %}
+
+{% load user_extras %}
+
+{% block title %}Update profile{% endblock %}
+
+{% block content %}
+<div class="w-md p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700" xmlns="http://www.w3.org/1999/html">
+     <p class="text-gray-700 text-xl dark:text-gray-300 mb-6 text-lg font-bold">
+        Update {{ user.first_name }} {{ user.last_name }}'s profile
+    </p>
+    <form class="max-w-sm mx-auto" method="post">
+    {% csrf_token %}
+    {% if user|has_group:'coach' %}
+    <label for="discipline" class="block mb-2 text-sm font-medium {% if form.discipline.errors %}text-red-700 dark:text-red-500{% elif form.discipline.errors %}text-green-700 dark:text-green-500{% else %}text-gray-900 dark:text-white{% endif %}">
+        Discipline
+    </label>
+    <input type="text" value="
+{% if form.discipline and form.discipline.value %}
+{{ form.discipline.value }}
+{% elif profile.discipline %}
+{{ profile.discipline }}
+    {% endif %}" id="discipline" name="discipline" class="
+    {% if form.discipline.errors %}bg-red-50 border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
+    {% elif form.discipline.errors %}bg-green-50 border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500
+    {% else %}bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+    {% endif %} block text-sm rounded-lg w-full p-2.5 border dark:bg-gray-700"/>
+    {% for error in form.discipline.errors %}
+        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+    {% endfor %}
+{%  endif %}
+    <label for="avatar" class="block mb-2 text-sm font-medium
+     {% if form.avatar.errors %}text-red-700 dark:text-red-500
+     {% elif form.avatar.errors %}text-green-700 dark:text-green-500
+     {% else %}text-gray-900 dark:text-white
+     {% endif %}">
+        Avatar
+    </label>
+    <input type="text" value="{% if form.avatar and form.avatar.value %}{{ form.avatar.value }}{% elif profile.avatar %}{{ profile.avatar }}{% endif %}" id="avatar" name="avatar"
+           class="{% if form.avatar.errors %}bg-red-50 border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
+    {% elif form.avatar.errors %}bg-green-50 border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500
+    {% else %}bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+    {% endif %} block text-sm rounded-lg w-full p-2.5 border dark:bg-gray-700"/>
+    {% for error in form.avatar.errors %}
+        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+    {% endfor %}
+
+    {% if user|has_group:'coach' %}
+    <label for="bio" class="block mb-2 text-sm font-medium {% if form.bio.errors %}
+    text-red-700 dark:text-red-500{% elif form.bio.errors %}
+    text-green-700 dark:text-green-500
+    {% else %}
+    text-gray-900 dark:text-white
+    {% endif %}">
+        Bio
+    </label>
+    <textarea id="bio" name="bio" class="{% if form.bio.errors %}
+    bg-red-50 border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
+    {% elif form.bio.errors %}
+    bg-green-50 border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500
+    {% else %}
+    bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500{% endif %} block text-sm rounded-lg w-full p-2.5 border dark:bg-gray-700">
+{% if form.bio and form.bio.value %}{{ form.bio.value }}{% elif profile.bio %}{{ profile.bio }}{% endif %}
+     </textarea>
+
+        {% for error in form.bio.errors %}
+        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ error }}</p>
+    {% endfor %}
+{%  endif %}
+    <div class="flex justify-center">
+            <button name="form_type" value="note" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" type="submit">
+                Update profile
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

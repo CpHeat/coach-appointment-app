@@ -1,0 +1,19 @@
+{% extends "../coach_appointment_site/base.html" %}
+{% load static %}
+{% load user_extras %}
+
+{% block title %}Access denied{% endblock %}
+
+{% block content %}
+{% if not user.is_authenticated %}
+    <p class="text-gray-700 dark:text-gray-300 mb-6 text-lg">Vous devez être connecté pour accéder à cette page.</p>
+    <a href="{% url 'coach_appointment_site:login' %}">
+        <button type="button" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+            Login
+        </button>
+    </a>
+{% else %}
+    <p class="text-gray-700 dark:text-gray-300 mb-6 text-lg">Vous n'avez pas les droits nécessaires pour accéder à cette page.</p>
+    <p class="text-gray-700 dark:text-gray-300 mb-6 text-lg">Cette page est réservée aux {{ required_role }}.</p>
+{% endif %}
+{% endblock %}

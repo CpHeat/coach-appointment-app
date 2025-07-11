@@ -1,0 +1,35 @@
+{% extends "./base.html" %}
+
+{% load static %}
+{% load user_extras %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+{% if user.profile.avatar %}
+{% if not user|has_group:'admin' and user|has_group:'coach' %}
+  <img class="w-36 h-36 rounded-full"
+       src="{{ STATIC_URL }}../static/coach_appointment_site/images/coaches/{{ user.profile.avatar }}.jpg" alt="Profile avatar">
+{% elif not user|has_group:'admin' and user|has_group:'customer' %}
+  <img class="w-36 h-36 rounded-full"
+       src="{{ STATIC_URL }}../static/coach_appointment_site/images/customers/{{ user.profile.avatar }}.jpg" alt="Profile avatar">
+{% else %}
+      <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+          <span class="font-medium text-gray-600 dark:text-gray-300">{{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}</span>
+      </div>
+{% endif %}
+{% endif %}
+  <h2 class="text-gray-700 text-2xl dark:text-gray-300 mb-6 text-2xl font-bold">{{ user.first_name }} {{ user.last_name }}</h2>
+{% if not user|has_group:'admin' and user|has_group:'coach' %}
+  <p class="text-gray-700 text-xl dark:text-gray-300 mb-6 text-lg font-bold"><strong>Discipline: </strong>{{ user.profile.discipline }}</p>
+  <p class="w-1/2 text-gray-700 text-xl dark:text-gray-300 mb-6 text-md font-bold"><strong>Bio: </strong>{{ user.profile.bio }}</p>
+    {% endif %}
+<a href="{% url 'coach_appointment_site:update_profile' %}">
+
+    <button name="form_type" value="note" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" type="submit">
+        Update profile
+    </button>
+  </a>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "../coach_appointment_site/base.html" %}
+
+{% block title %}Account confirmation successfull{% endblock %}
+
+{% block content %}
+
+<p class="text-gray-700 dark:text-gray-300 mb-6 text-lg">Account confirmed! you are now logged in.</p>
+<a href="{% url 'coach_appointment_site:dashboard' %}">
+    <button type="button" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+        Meet your dashboard
+    </button>
+</a>
+{% endblock %}
