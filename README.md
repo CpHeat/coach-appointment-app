@@ -102,7 +102,7 @@ coach_appointment_project/
 
    ```bash
    pip install -r requirements.txt
-   npm install --prefix theme
+   npm install
    ```
 
 6. **Lancer le serveur de développement :**
